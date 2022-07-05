@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const sqlite3 = require('sqlite3');
 
-const PORT = 3000;
+const PORT = 3010;
 
 const app = express();
 app.set('port', PORT);
@@ -41,6 +41,11 @@ router.get('/post/:id', function(req, res, next) {
 })
 app.post('/post', (req, res, next) => {
   console.log('Got body:', req.body);
+  console.log('Got auth:', req.header('Authorization'));
+  if (req.header('Authorization') != "sam") {
+    res.sendStatus(403);
+    return;
+  }
   const sql = `INSERT INTO post (id, text) VALUES (?, ?)`;
   const params = [req.body.id, req.body.text];
   db.run(sql, params, function(err, result) {
